@@ -373,13 +373,17 @@ def draw_window(surface, grid, score=0, last_score=0):
     # pygame.display.update()
 
 
-def draw_rec_numbers(surface, numbers):
-    font = pygame.font.Font(fontpath, 20)
+def draw_rec_numbers(surface, confidence, numbers):
+    rankFont = pygame.font.Font(fontpath, 20)
+    confFont = pygame.font.Font(fontpath, 12)
 
     for i in range(len(numbers)):
-        label = font.render(str(i + 1), 1, (255, 255, 255))
+        rank = rankFont.render(str(i + 1), 1, (255, 255, 255))
+        conf = confFont.render(str(confidence[i]), 1, (255, 255, 255))
         surface.blit(
-            label, ((top_left_x + numbers[i][0] * block_size) + 10, top_left_y + numbers[i][1] * block_size))
+            rank, ((top_left_x + numbers[i][0] * block_size) + 10, top_left_y + numbers[i][1] * block_size - 9))
+        surface.blit(
+            conf, ((top_left_x + numbers[i][0] * block_size) + 8, top_left_y + numbers[i][1] * block_size + 15))
 
 # update the score txt file with high score
 def update_score(new_score):
@@ -558,7 +562,7 @@ def main(window):
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
-        draw_rec_numbers(window, rec_nums)
+        draw_rec_numbers(window, [recommended_moves[0][1], recommended_moves[1][1], recommended_moves[2][1]], rec_nums)
         pygame.display.update()
 
         if check_lost(locked_positions):
