@@ -385,6 +385,19 @@ def get_max_score():
     return score
 
 
+def clean_grid_from_locked(locked_pos={}):
+    grid = [[0 for x in range(col)]
+            for y in range(row)]  # grid represented rgb tuples
+
+    # locked_positions dictionary
+    # (x,y):(r,g,b)
+    for y in range(row):
+        for x in range(col):
+            if (x, y) in locked_pos:
+                grid[y][x] = 1
+
+    return grid
+
 def main(window):
     locked_positions = {}
     create_grid(locked_positions)
@@ -480,6 +493,11 @@ def main(window):
             if last_score < score:
                 last_score = score
 
+            print("\n".join(
+                [" ".join([str(j) for j in i])
+                 for i in clean_grid_from_locked(locked_positions)]
+            ))
+
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
         pygame.display.update()
@@ -500,9 +518,9 @@ def main_menu(window):
         pygame.display.update()
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            elif event.type == pygame.KEYDOWN:
+            # if event.type == pygame.QUIT:
+            #     run = False
+            # elif event.type == pygame.KEYDOWN:
                 main(window)
 
     pygame.quit()
@@ -513,3 +531,10 @@ if __name__ == '__main__':
     pygame.display.set_caption('Tetris')
 
     main_menu(win)  # start game
+
+
+#
+# #### # #
+# ##  ###
+# ##  ## #
+# ########
