@@ -493,6 +493,9 @@ def main(window):
             if last_score < score:
                 last_score = score
 
+            # HERES WHERE THE BOARD STATE IS OUTPUTTED
+            # Use clean_grid_from_locked(locked_positions) for the board
+            # and next_piece for the next piece
             print("\n".join(
                 [" ".join([str(j) for j in i])
                  for i in clean_grid_from_locked(locked_positions)]
@@ -531,10 +534,3 @@ if __name__ == '__main__':
     pygame.display.set_caption('Tetris')
 
     main_menu(win)  # start game
-
-
-#
-# #### # #
-# ##  ###
-# ##  ## #
-# ########
