@@ -31,8 +31,8 @@ top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height - 50
 
 filepath = './Resources/highscore.txt'
-fontpath = './Resources/arcade.ttf'
-fontpath_mario = './Resources/mario.ttf'
+fontpath = 'Resources/Hubot_Sans/static/HubotSans-Medium.ttf'
+# fontpath_mario = './Resources/mario.ttf'
 
 # shapes formats
 
@@ -156,6 +156,13 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0  # chooses the rotation according to index
 
+
+# dummy values for now
+recommended_moves = [
+    (Piece(1, 19, I), 95),
+    (Piece(4, 20, T), 90),
+    (Piece(7, 20, T), 85),
+]
 
 # initialise the grid
 def create_grid(locked_pos={}):
@@ -312,13 +319,12 @@ def draw_next_shape(piece, surface):
 
     # pygame.display.update()
 
-
 # draws the content of the window
 def draw_window(surface, grid, score=0, last_score=0):
     surface.fill((0, 0, 0))  # fill the surface with black
 
     pygame.font.init()  # initialise font
-    font = pygame.font.Font(fontpath_mario, 65)
+    font = pygame.font.Font(fontpath, 65)
     font.bold = True
     # initialise 'Tetris' text with white
     label = font.render('TETRIS', 1, (255, 255, 255))
@@ -328,7 +334,7 @@ def draw_window(surface, grid, score=0, last_score=0):
                  (label.get_width() / 2), 30))
 
     # current score
-    font = pygame.font.Font(fontpath, 30)
+    font = pygame.font.Font(fontpath, 25)
     label = font.render('SCORE   ' + str(score), 1, (255, 255, 255))
 
     start_x = top_left_x + play_width + 50
@@ -338,12 +344,15 @@ def draw_window(surface, grid, score=0, last_score=0):
 
     # last score
     label_hi = font.render(
-        'HIGHSCORE   ' + str(last_score), 1, (255, 255, 255))
+        'HIGHSCORE', 1, (255, 255, 255))
+    label_hi_score = font.render(
+        str(last_score), 1, (255, 255, 255))
 
-    start_x_hi = top_left_x - 240
-    start_y_hi = top_left_y + 200
+    start_x_hi = top_left_x - 210
+    start_y_hi = top_left_y + 400
 
-    surface.blit(label_hi, (start_x_hi + 20, start_y_hi + 200))
+    surface.blit(label_hi, (start_x_hi, start_y_hi))
+    surface.blit(label_hi_score, (start_x_hi, start_y_hi + 30))
 
     # draw content of the grid
     for i in range(row):
@@ -364,6 +373,14 @@ def draw_window(surface, grid, score=0, last_score=0):
 
     # pygame.display.update()
 
+
+def draw_rec_numbers(surface, numbers):
+    font = pygame.font.Font(fontpath, 20)
+
+    for i in range(len(numbers)):
+        label = font.render(str(i + 1), 1, (255, 255, 255))
+        surface.blit(
+            label, ((top_left_x + numbers[i][0] * block_size) + 10, top_left_y + numbers[i][1] * block_size))
 
 # update the score txt file with high score
 def update_score(new_score):
@@ -478,6 +495,30 @@ def main(window):
             if y >= 0:
                 grid[y][x] = current_piece.color
 
+        rec_nums = []
+
+        for piece_and_conf in recommended_moves:
+            (piece, confidence) = piece_and_conf
+            rec_piece_pos = convert_shape_format(piece)
+
+            max_x = 0
+            min_x = 10
+            max_y = 0
+            min_y = 20
+
+            for i in range(len(rec_piece_pos)):
+                x, y = rec_piece_pos[i]
+                if y >= 0:
+                    grid[y][x] = (40, 40, 40)
+
+                max_x = max(max_x, x)
+                min_x = min(min_x, x)
+                max_y = max(max_y, y)
+                min_y = min(min_y, y)
+
+            rec_nums.append((min_x + (max_x - min_x)/2,
+                            min_y + (max_y - min_y)/2))
+
         if change_piece:  # if the piece is locked
             for pos in piece_pos:
                 p = (pos[0], pos[1])
@@ -503,6 +544,7 @@ def main(window):
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
+        draw_rec_numbers(window, rec_nums)
         pygame.display.update()
 
         if check_lost(locked_positions):
