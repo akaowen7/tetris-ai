@@ -30,9 +30,9 @@ block_size = 30  # size of block
 top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height - 50
 
-filepath = './highscore.txt'
-fontpath = './arcade.ttf'
-fontpath_mario = './mario.ttf'
+filepath = './Resources/highscore.txt'
+fontpath = './Resources/arcade.ttf'
+fontpath_mario = './Resources/mario.ttf'
 
 # shapes formats
 
