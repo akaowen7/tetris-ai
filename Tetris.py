@@ -156,6 +156,7 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0  # chooses the rotation according to index
 
+suggestions = [(Piece(4,21,T), 85)]
 
 # initialise the grid
 def create_grid(locked_pos={}):
@@ -469,6 +470,21 @@ def main(window):
                     if not valid_space(current_piece, grid):
                         current_piece.rotation = current_piece.rotation - \
                             1 % len(current_piece.shape)
+                        
+                elif event.key == pygame.K_1 and len(suggestions) > 0:
+                    current_piece.x = suggestions[0][0].x
+                    current_piece.y = suggestions[0][0].y
+                    current_piece.rotation = suggestions[0][0].rotation
+
+                elif event.key == pygame.K_2 and len(suggestions) > 1:
+                    current_piece.x = suggestions[1][0].x
+                    current_piece.y = suggestions[1][0].y
+                    current_piece.rotation = suggestions[1][0].rotation
+
+                elif event.key == pygame.K_3 and len(suggestions) > 2:
+                    current_piece.x = suggestions[1][0].x
+                    current_piece.y = suggestions[1][0].y
+                    current_piece.rotation = suggestions[1][0].rotation
 
         piece_pos = convert_shape_format(current_piece)
 
