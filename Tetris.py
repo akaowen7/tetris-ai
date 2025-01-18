@@ -156,8 +156,6 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0  # chooses the rotation according to index
 
-suggestions = [(Piece(4,21,T), 85)]
-
 # dummy values for now
 recommended_moves = [
     (Piece(1, 19, I), 95),
@@ -488,20 +486,20 @@ def main(window):
                         current_piece.rotation = current_piece.rotation - \
                             1 % len(current_piece.shape)
                         
-                elif event.key == pygame.K_1 and len(suggestions) > 0:
-                    current_piece.x = suggestions[0][0].x
-                    current_piece.y = suggestions[0][0].y
-                    current_piece.rotation = suggestions[0][0].rotation
+                elif event.key == pygame.K_1 and len(recommended_moves) > 0:
+                    current_piece.x = recommended_moves[0][0].x
+                    current_piece.y = recommended_moves[0][0].y
+                    current_piece.rotation = recommended_moves[0][0].rotation
 
-                elif event.key == pygame.K_2 and len(suggestions) > 1:
-                    current_piece.x = suggestions[1][0].x
-                    current_piece.y = suggestions[1][0].y
-                    current_piece.rotation = suggestions[1][0].rotation
+                elif event.key == pygame.K_2 and len(recommended_moves) > 1:
+                    current_piece.x = recommended_moves[1][0].x
+                    current_piece.y = recommended_moves[1][0].y
+                    current_piece.rotation = recommended_moves[1][0].rotation
 
-                elif event.key == pygame.K_3 and len(suggestions) > 2:
-                    current_piece.x = suggestions[1][0].x
-                    current_piece.y = suggestions[1][0].y
-                    current_piece.rotation = suggestions[1][0].rotation
+                elif event.key == pygame.K_3 and len(recommended_moves) > 2:
+                    current_piece.x = recommended_moves[1][0].x
+                    current_piece.y = recommended_moves[1][0].y
+                    current_piece.rotation = recommended_moves[1][0].rotation
 
         piece_pos = convert_shape_format(current_piece)
 
