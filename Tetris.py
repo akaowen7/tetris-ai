@@ -156,6 +156,7 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0  # chooses the rotation according to index
 
+suggestions = [(Piece(4,21,T), 85)]
 
 # initialise the grid
 def create_grid(locked_pos={}):
@@ -385,6 +386,19 @@ def get_max_score():
     return score
 
 
+def clean_grid_from_locked(locked_pos={}):
+    grid = [[0 for x in range(col)]
+            for y in range(row)]  # grid represented rgb tuples
+
+    # locked_positions dictionary
+    # (x,y):(r,g,b)
+    for y in range(row):
+        for x in range(col):
+            if (x, y) in locked_pos:
+                grid[y][x] = 1
+
+    return grid
+
 def main(window):
     locked_positions = {}
     create_grid(locked_positions)
@@ -456,6 +470,21 @@ def main(window):
                     if not valid_space(current_piece, grid):
                         current_piece.rotation = current_piece.rotation - \
                             1 % len(current_piece.shape)
+                        
+                elif event.key == pygame.K_1 and len(suggestions) > 0:
+                    current_piece.x = suggestions[0][0].x
+                    current_piece.y = suggestions[0][0].y
+                    current_piece.rotation = suggestions[0][0].rotation
+
+                elif event.key == pygame.K_2 and len(suggestions) > 1:
+                    current_piece.x = suggestions[1][0].x
+                    current_piece.y = suggestions[1][0].y
+                    current_piece.rotation = suggestions[1][0].rotation
+
+                elif event.key == pygame.K_3 and len(suggestions) > 2:
+                    current_piece.x = suggestions[1][0].x
+                    current_piece.y = suggestions[1][0].y
+                    current_piece.rotation = suggestions[1][0].rotation
 
         piece_pos = convert_shape_format(current_piece)
 
@@ -480,6 +509,14 @@ def main(window):
             if last_score < score:
                 last_score = score
 
+            # HERES WHERE THE BOARD STATE IS OUTPUTTED
+            # Use clean_grid_from_locked(locked_positions) for the board
+            # and next_piece for the next piece
+            print("\n".join(
+                [" ".join([str(j) for j in i])
+                 for i in clean_grid_from_locked(locked_positions)]
+            ))
+
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
         pygame.display.update()
@@ -500,9 +537,9 @@ def main_menu(window):
         pygame.display.update()
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            elif event.type == pygame.KEYDOWN:
+            # if event.type == pygame.QUIT:
+            #     run = False
+            # elif event.type == pygame.KEYDOWN:
                 main(window)
 
     pygame.quit()
