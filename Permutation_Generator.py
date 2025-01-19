@@ -87,8 +87,11 @@ def generate_permutations(input_piece, board):
                     #         else:
                     #             column.append(0)
                     #     new_board.append(column)
-                    print("Recommended move:", piece.x, piece.y)
-                    valid_placements.append((new_board + board, Piece(piece.x, piece.y, piece.shape)))
+                    rec_piece = Piece(piece.x, piece.y, piece.shape)
+                    rec_piece.rotation = piece.rotation
+
+                    print("new board: ", (new_board + board, str(rec_piece)))
+                    valid_placements.append((new_board + board, rec_piece))
     
     return valid_placements
 

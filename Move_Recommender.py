@@ -22,8 +22,6 @@ class Move_Recommender:
 
         perms = Perm_Gen.generate_permutations(self.next_piece, self.initial_board)
 
-        print("All potential recommened moves: ", [(perm[1].x, perm[1].y) for perm in perms])
-
         calculated_values = []
         for board in perms:
             # print(board)

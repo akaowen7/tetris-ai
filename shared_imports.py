@@ -117,6 +117,9 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0  # chooses the rotation according to index
 
+    def __str__(self):
+      return f"Piece at {self.x}, {self.y} with rotation {self.rotation} and shape {self.shape[self.rotation]} and color {self.color}"
+
 
 def convert_shape_format(piece):
     positions = []

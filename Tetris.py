@@ -444,7 +444,6 @@ def main(window):
 
             for i in range(len(rec_piece_pos)):
                 x, y = rec_piece_pos[i]
-                print(f"size of the grid: ({ len(grid) }, { len(grid[0]) }), x: { x }, y: { y }")
                 if y >= 0:
                     grid[x][y] = (40, 40, 40)
 
@@ -482,7 +481,9 @@ def main(window):
             recommended_moves = Move_Rec.Move_Recommender(
                 clean_grid_from_locked(locked_positions), current_piece).recommend_move()
             
-            # print(recommended_moves)
+            print("board: ", recommended_moves[0][0])
+            print("rec position: ", recommended_moves[0][1])
+            print("confidence: ", recommended_moves[0][2])
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
