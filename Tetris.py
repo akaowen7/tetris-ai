@@ -421,6 +421,14 @@ def main(window):
                     current_piece.y = recommended_moves[2][1].y
                     current_piece.rotation = recommended_moves[1][1].rotation
 
+                #pause the game
+                elif event.key == pygame.K_p:
+                    while True:
+                        event = pygame.event.wait()
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                            break
+                
+
         piece_pos = convert_shape_format(current_piece)
 
         # draw the piece on the grid by giving color in the piece locations

@@ -30,9 +30,10 @@ class Board_Evaluator:
     
     # Factor parameters
     holes_param = -0.51 # a
-    height_param = -0.35 # b
-    variance_param = -0.18 # c
+    height_param = -0.28 # b
+    variance_param = -0.15 # c
     lines_param = 0.76 # d
+    overhang_param = -0.41 # e
     
     def find_board_heights(self, board):
         heights = []
@@ -47,12 +48,21 @@ class Board_Evaluator:
         return heights
 
     def find_board_value(self):
-        print("Holes: ", self.holes(self.initial_board))
-        print("Height: ", self.board_height())
-        print("Variance: ", self.surface_variance())
-        print("Complete lines: ", self.complete_lines(self.initial_board))
-        return ((self.holes(self.initial_board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(self.initial_board) * self.lines_param))
+        return ((self.overhangs(self.initial_board) * self.overhang_param) + (self.holes(self.initial_board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(self.initial_board) * self.lines_param))
 
+    def overhangs(self, board: np.array):
+        overhangs = 0
+        for i in range(board.shape[1]):
+            col = board[:, i]
+            count = False
+            for j in range(len(col)):
+                if count:
+                    if col[j] == 0:
+                        overhangs += 1
+                else:
+                    count = (col[j] == 1)
+        return overhangs
+    
     def holes(self, board: np.array):
         edges = [(edge[0][0], edge[0][1]) for edge in Edge_Tracer.Edge_Tracer(board).generate_path()]
 
