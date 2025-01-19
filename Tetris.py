@@ -140,8 +140,8 @@ T = [['.....',
 
 # index represents the shape
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255),
-                (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(27, 224, 27), (237, 38, 38), (33, 217, 217),
+                (230, 230, 37), (235, 186, 28), (34, 78, 224), (150, 14, 132)]
 
 
 # class to represent each of the pieces
@@ -162,6 +162,18 @@ recommended_moves = [
     (Piece(4, 20, T), 90),
     (Piece(7, 20, T), 85),
 ]
+
+
+def drop_shadow_text(screen, text, size, x, y, colour=(255, 255, 255), drop_colour=(128, 128, 128), font=None):
+    # how much 'shadow distance' is best?
+    dropshadow_offset = 1 + (size // 15)
+    text_font = pygame.font.Font(font, size)
+    # make the drop-shadow
+    text_bitmap = text_font.render(text, True, drop_colour)
+    screen.blit(text_bitmap, (x+dropshadow_offset, y+dropshadow_offset))
+    # make the overlay text
+    text_bitmap = text_font.render(text, True, colour)
+    screen.blit(text_bitmap, (x, y))
 
 # initialise the grid
 def create_grid(locked_pos={}):
@@ -325,12 +337,12 @@ def draw_window(surface, grid, score=0, last_score=0):
     pygame.font.init()  # initialise font
     font = pygame.font.Font(fontpath, 65)
     font.bold = True
-    # initialise 'Tetris' text with white
+    # initialise 'Tetris' text with white (this is only used for the width of the text)
     label = font.render('TETRIS', 1, (255, 255, 255))
 
-    # put surface on the center of the window
-    surface.blit(label, ((top_left_x + play_width / 2) -
-                 (label.get_width() / 2), 30))
+    # draw the text with drop shadow
+    drop_shadow_text(surface, 'TETRIS', 65, (top_left_x +
+                   play_width / 2) - (label.get_width() / 2), 20, (255, 255, 255), (128, 128, 128), fontpath)
 
     # current score
     font = pygame.font.Font(fontpath, 25)
@@ -359,8 +371,34 @@ def draw_window(surface, grid, score=0, last_score=0):
             # pygame.draw.rect()
             # draw a rectangle shape
             # rect(Surface, color, Rect, width=0) -> Rect
-            pygame.draw.rect(surface, grid[i][j],
-                             (top_left_x + j * block_size, top_left_y + i * block_size, block_size, block_size), 0)
+            block_x = top_left_x + j * block_size
+            block_y = top_left_y + i * block_size
+            dip = block_size//6
+            colour = grid[i][j]
+            lighter_colour = tuple(min(x+25, 255) for x in colour)
+            darker_colour = tuple(max(x-25, 0) for x in colour)
+
+            pygame.draw.rect(surface, colour,
+                             (block_x, block_y, block_size, block_size), 0)
+
+            if (colour != (0, 0, 0)):
+                pygame.draw.polygon(surface, lighter_colour, [
+                    (block_x, block_y),
+                    (block_x + block_size, block_y),
+                    (block_x + block_size - dip, block_y + dip),
+                    (block_x + dip, block_y + dip),
+                    (block_x + dip, block_y + block_size - dip),
+                    (block_x, block_y + block_size)
+                ]),
+
+                pygame.draw.polygon(surface, darker_colour, [
+                    (block_x + block_size, block_y + block_size),
+                    (block_x, block_y + block_size),
+                    (block_x + dip, block_y + block_size - dip),
+                    (block_x + block_size - dip, block_y + block_size - dip),
+                    (block_x + block_size - dip, block_y + dip),
+                    (block_x + block_size, block_y)
+                ])
 
     # draw vertical and horizontal grid lines
     draw_grid(surface)
