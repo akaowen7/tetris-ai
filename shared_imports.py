@@ -138,12 +138,23 @@ def convert_shape_format(piece):
             if column == '0':
                 positions.append((piece.x + j, piece.y + i))
 
-    print(f"abs(?) Positions: { positions }, raw position: { piece.x, piece.y }, shape: { shape_format }")
+    #print(f"abs(?) Positions: { positions }, raw position: { piece.x, piece.y }, shape: { shape_format }")
 
     for i, pos in enumerate(positions):
         # offset according to the input given with dot and zero
         positions[i] = (pos[0] - 2, pos[1] - 4)
 
-    print(f"Final Positions: { positions }")
+    #print(f"Final Positions: { positions }")
 
+    return positions
+
+def positions_rel_to_xy(piece):
+    positions = []
+    shape_format = piece.shape[piece.rotation % len(piece.shape)]
+    for i, line in enumerate(shape_format):  # i gives index; line gives string
+        row = list(line)  # makes a list of char from string
+        # j gives index of char; column gives char
+        for j, column in enumerate(row):
+            if column == '0':
+                positions.append((j - 2, i - 4))
     return positions
