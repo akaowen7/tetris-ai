@@ -323,8 +323,33 @@ def draw_next_shape(piece, surface):
         row = list(line)
         for j, column in enumerate(row):
             if column == '0':
+                block_x = start_x + j * block_size
+                block_y = start_y + i * block_size
+                lighter_colour = tuple(min(x+25, 255) for x in piece.color)
+                darker_colour = tuple(max(x-25, 0) for x in piece.color)
+                dip = block_size//6
+
                 pygame.draw.rect(surface, piece.color, (start_x + j*block_size,
                                  start_y + i*block_size, block_size, block_size), 0)
+
+                pygame.draw.polygon(surface, lighter_colour, [
+                    (block_x, block_y),
+                    (block_x + block_size, block_y),
+                    (block_x + block_size - dip, block_y + dip),
+                    (block_x + dip, block_y + dip),
+                    (block_x + dip, block_y + block_size - dip),
+                    (block_x, block_y + block_size)
+                ]),
+
+                pygame.draw.polygon(surface, darker_colour, [
+                    (block_x + block_size, block_y + block_size),
+                    (block_x, block_y + block_size),
+                    (block_x + dip, block_y + block_size - dip),
+                    (block_x + block_size - dip, block_y + block_size - dip),
+                    (block_x + block_size - dip, block_y + dip),
+                    (block_x + block_size, block_y)
+                ])
+
 
     surface.blit(label, (start_x, start_y - 30))
 
