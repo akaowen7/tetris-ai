@@ -36,6 +36,8 @@ def generate_permutations(input_piece, board):
     potential_positions = [(edge[0][0], edge[0][1]) for edge in edges if edge[1]]
 
     valid_placements = [] # elements will be of form (board, piece)
+    simple_valid_placements = [] # simpler data structure for checking duplicates, elements will be of form (x, y, rotation)
+
     for test_pos in potential_positions: #try all resting potential_positions 
         for rotation in range(len(piece.shape)): #try all rotations of piece
             
@@ -44,6 +46,9 @@ def generate_permutations(input_piece, board):
             for xy in xy_positions: #try putting xy in each position
                 piece.x = test_pos[1] + xy[0]
                 piece.y = test_pos[0] + xy[1]
+                if (piece.x, piece.y, rotation) in simple_valid_placements:
+                    print("duplicate")
+                    continue
                 blocks_abs = convert_shape_format(piece) #computationally inefficient but more readable I hope
                 blocks_abs = [(i[1], i[0]) for i in blocks_abs] # Convert to our x,y format
 
@@ -91,16 +96,17 @@ def generate_permutations(input_piece, board):
                     rec_piece.rotation = piece.rotation
                     
                     valid_placements.append((new_board + board, rec_piece))
+                    simple_valid_placements.append((piece.x, piece.y, rotation))
     
     return valid_placements
 
-# test_piece = Piece(0,0,T)
+test_piece = Piece(0,0,T)
 
 # print(sample_board)
-# perms = generate_permutations(test_piece, sample_board)
+perms = generate_permutations(test_piece, sample_board)
 
-# print("perms length: ", len(perms))
-# print(perms)
-# print(perms[1][2])
-# print(f"piece: (x, y): ({ perms[1][1].x }, { perms[1][1].y }), rotation: { perms[1][1].rotation }")
+print("perms length: ", len(perms))
+#print(perms)
+#print(perms[1][2])
+print(f"piece: (x, y): ({ perms[1][1].x }, { perms[1][1].y }), rotation: { perms[1][1].rotation }")
 
