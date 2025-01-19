@@ -2,6 +2,8 @@ import random
 import numpy as np
 import pygame
 import Move_Recommender as Move_Rec
+from Permutation_Generator import generate_permutations
+from shared_imports import Piece, I, T, shapes, convert_shape_format
 
 """
 10 x 20 grid
@@ -35,128 +37,6 @@ top_left_y = s_height - play_height - 50
 filepath = './Resources/highscore.txt'
 fontpath = 'Resources/Hubot_Sans/static/HubotSans-Medium.ttf'
 # fontpath_mario = './Resources/mario.ttf'
-
-# shapes formats
-
-S = [['.....',
-      '.....',
-      '..00.',
-      '.00..',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '...0.',
-      '.....']]
-
-Z = [['.....',
-      '.....',
-      '.00..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '.0...',
-      '.....']]
-
-I = [['.....',
-      '..0..',
-      '..0..',
-      '..0..',
-      '..0..'],
-     ['.....',
-      '0000.',
-      '.....',
-      '.....',
-      '.....']]
-
-O = [['.....',
-      '.....',
-      '.00..',
-      '.00..',
-      '.....']]
-
-J = [['.....',
-      '.0...',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..00.',
-      '..0..',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '...0.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '.00..',
-      '.....']]
-
-L = [['.....',
-      '...0.',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '.0...',
-      '.....'],
-     ['.....',
-      '.00..',
-      '..0..',
-      '..0..',
-      '.....']]
-
-T = [['.....',
-      '..0..',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '..0..',
-      '.....']]
-
-# index represents the shape
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(27, 224, 27), (237, 38, 38), (33, 217, 217),
-                (230, 230, 37), (235, 186, 28), (34, 78, 224), (150, 14, 132)]
-
-
-# class to represent each of the pieces
-
-
-class Piece(object):
-    def __init__(self, x, y, shape):
-        self.x = x
-        self.y = y
-        self.shape = shape
-        # choose color from the shape_color list
-        self.color = shape_colors[shapes.index(shape)]
-        self.rotation = 0  # chooses the rotation according to index
 
 # dummy values for now
 recommended_moves = [
@@ -192,33 +72,6 @@ def create_grid(locked_pos={}):
                 grid[y][x] = color  # set grid position to color
 
     return grid
-
-
-def convert_shape_format(piece):
-    positions = []
-    # get the desired rotated shape from piece
-    shape_format = piece.shape[piece.rotation % len(piece.shape)]
-
-    '''
-    e.g.
-       ['.....',
-        '.....',
-        '..00.',
-        '.00..',
-        '.....']
-    '''
-    for i, line in enumerate(shape_format):  # i gives index; line gives string
-        row = list(line)  # makes a list of char from string
-        # j gives index of char; column gives char
-        for j, column in enumerate(row):
-            if column == '0':
-                positions.append((piece.x + j, piece.y + i))
-
-    for i, pos in enumerate(positions):
-        # offset according to the input given with dot and zero
-        positions[i] = (pos[0] - 2, pos[1] - 4)
-
-    return positions
 
 
 # checks if current position of piece in grid is valid
@@ -573,6 +426,9 @@ def main(window):
                     current_piece.y = recommended_moves[1][0].y
                     current_piece.rotation = recommended_moves[1][0].rotation
 
+                elif event.key == pygame.K_4: 
+                    print(generate_permutations(current_piece, clean_grid_from_locked(locked_positions)))
+
         piece_pos = convert_shape_format(current_piece)
 
         # draw the piece on the grid by giving color in the piece locations
@@ -623,10 +479,10 @@ def main(window):
             # HERES WHERE THE BOARD STATE IS OUTPUTTED
             # Use clean_grid_from_locked(locked_positions) for the board
             # and next_piece for the next piece
-            print("\n".join(
-                [" ".join([str(j) for j in i])
-                 for i in clean_grid_from_locked(locked_positions)]
-            ))
+            # print("\n".join(
+            #     [" ".join([str(j) for j in i])
+            #      for i in clean_grid_from_locked(locked_positions)]
+            # ))
 
             recommended_moves = Move_Rec.Move_Recommender(
                 clean_grid_from_locked(locked_positions), next_piece).recommend_move()

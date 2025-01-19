@@ -1,60 +1,84 @@
+from shared_imports import Piece, convert_shape_format, T
+import Edge_Tracer
 import numpy as np
-import Tetris 
-from Tetris import Piece
 
-class Permutation_Generator:
-    def __init__(self, initial_board: np.array, next_piece: Piece):
-        """
-        initial_board (np.array): 10 x 20 array of the current board state
-        next_piece (Piece): The next piece to be placed on the board
-        """
-        self.initial_board = initial_board # 10 x 20 np array
-        self.next_piece = next_piece
+sample_board = np.array([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 1, 0, 0, 0, 0, 0, 0, 0], 
+    [1, 0, 1, 0, 0, 0, 0, 0, 1, 0], 
+    [1, 1, 1, 0, 0, 0, 1, 1, 1, 0], 
+    [1, 0, 1, 1, 1, 0, 1, 1, 1, 0], 
+    [1, 0, 0, 1, 0, 1, 1, 1, 1, 0], 
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0]])
 
-    def generate(self):
-        """
-        Generates all possible permutations of the board state
-        
-        Returns: 
-        perms (np.array): Array of board_state_with_piece"""
-        
-        perms = []
-        
-        tracedLocations = [(2,3), (1,4), (7,8)] # MAX AHHHHHH
+def generate_permutations(input_piece, board):
+    piece = Piece(input_piece.x, input_piece.y, input_piece.shape) # don't mess with the actual game piece
 
-        # makes a 2D list of all the possible (x,y)
-        accepted_pos = [[(x, y) for x in range(20) if self.initial_board[y]
-                        [x] == (0)] for y in range(10)]
-        # removes sub lists and puts (x,y) in one list; easier to search
-        accepted_pos = [x for item in accepted_pos for x in item]
+    # surface_positions = [((2,3), True), (1,4, False), (7,8, True)]
 
-        validLocations = [x for x in tracedLocations for x in accepted_pos]
+    edges = Edge_Tracer.Edge_Tracer(board).generate_path()
+    print(edges)
 
-        for loc in validLocations:
-            # Set peice to a valid location
-            self.next_piece.x = loc[0]
-            self.next_piece.y = loc[1]
 
-            for _ in range(3): # loop through all rotations
 
-                formatted_shape = Tetris.convert_shape_format(self.next_piece)
 
-                if Tetris.check_lost(formatted_shape): # If out of bounds rotate and go next
-                    self.next_piece.rotation += 1
-                    continue
+    positions = filter(lambda x : x[1], edges)
 
-                for pos in formatted_shape: # For each block check if its spot is open else rotate and go next
-                    if pos not in accepted_pos:
-                        if pos[1] >= 0:
-                            self.next_piece.rotation += 1
-                            continue
-                # Add piece to board and add it to solution
-                tempBoard = self.initial_board
-                for pos in formatted_shape:
-                    tempBoard[pos[0]] = 1
-                    tempBoard[pos[1]] = 1
-                if tempBoard not in perms:
-                    perms.append(tempBoard)
-                self.next_piece.rotation += 1
-        
-        return perms
+    valid_placements = [] # elements will be of form (board, piece)
+
+    for rotation in range(3): #try all rotations of piece
+        piece.rotation = rotation
+        blocks = convert_shape_format(piece)
+        for pos in positions: #try all resting positions
+            for block in blocks: #try putting each block of the piece in the position
+                valid = True
+                x = pos[0][0] - block[0]
+                y = pos[0][1] - block[1]
+                blocks_absolute = map(lambda other_block: [x + other_block[0], y + other_block[1]], blocks) # absolute position of each block in board
+                for other_block in blocks_absolute: #check that each other block is in a valid position
+                    if not ((0 <= other_block[0] < 10) and (0 <= other_block[1] < 20)): #out of bounds
+                        valid = False
+                        break
+                    if board[other_block[0]][other_block[1]] == 1: #occupied
+                        valid = False
+                        break
+                print(valid)
+                if valid:
+                    new_board = np.zeros(board.shape)
+                    for pos in blocks_absolute:
+                        new_board[pos[0]][pos[1]] = 1
+
+                    print(new_board)
+                    # for i in range(20):
+                    #     column = []
+                    #     for j in range(10):
+                    #         if board[i][j] == 1 or [i,j] in blocks_absolute:
+                    #             column.append(1)
+                    #         else:
+                    #             column.append(0)
+                    #     new_board.append(column)
+                    valid_placements.append((board, Piece(x, y, piece.shape)))
+    
+    return valid_placements
+
+test_piece = Piece(0,0,T)
+
+perms = generate_permutations(test_piece, sample_board)
+
+print("perms length: ", len(perms))
+print(perms[0])
+print(perms[1])
+
