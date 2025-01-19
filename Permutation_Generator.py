@@ -76,8 +76,10 @@ def generate_permutations(input_piece, board):
                 if valid:
                     #print(blocks_abs)
                     new_board = np.zeros(board.shape)
+                    display_board = np.zeros(board.shape)
                     for block_abs in blocks_abs:
                         new_board[block_abs[0]][block_abs[1]] = 1
+                        display_board[block_abs[0]][block_abs[1]] = 2
                     # for i in range(20):
                     #     column = []
                     #     for j in range(10):
@@ -86,15 +88,17 @@ def generate_permutations(input_piece, board):
                     #         else:
                     #             column.append(0)
                     #     new_board.append(column)
-                    valid_placements.append((new_board, Piece(piece.x, piece.y, piece.shape)))
+                    valid_placements.append((new_board + board, Piece(piece.x, piece.y, piece.shape)))
     
     return valid_placements
 
 # test_piece = Piece(0,0,T)
 
+# print(sample_board)
 # perms = generate_permutations(test_piece, sample_board)
 
 # print("perms length: ", len(perms))
 # print(perms)
-# #print(perms[40])
+# print(perms[1][2])
+# print(f"piece: (x, y): ({ perms[1][1].x }, { perms[1][1].y }), rotation: { perms[1][1].rotation }")
 

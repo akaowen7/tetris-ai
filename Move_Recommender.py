@@ -29,11 +29,8 @@ class Move_Recommender:
 
         calculated_values.sort(key=lambda x: x[2])
 
-        print(f"Top move: { calculated_values[0][0] }, { calculated_values[0][1] }, { calculated_values[0][2] }")
         outputted_moves = []
         for i in range(1):
             outputted_moves.append(calculated_values[i])
-
-        print(outputted_moves[0][1])
         
         return outputted_moves

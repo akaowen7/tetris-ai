@@ -65,30 +65,31 @@ class Edge_Tracer:
         path = {(tracer.position, True)}
 
         while tracer.position[1] + 1 != self.board.shape[1]:
-            #print(f"Current position: { tracer.position }, Previous direction: { tracer.previous_direction }, check_location: { tracer.check_location() }")
-            neighborPos = (tracer.position[0] + tracer.check_location()[0], tracer.position[1] + tracer.check_location()[1])
-            neighbor = self.board[neighborPos[0], neighborPos[1]]
-
-            #print(f"Neighbor: { neighbor }, Neighbor Position: { neighborPos }")
+            checkedPos = (tracer.position[0] + tracer.check_location()[0], tracer.position[1] + tracer.check_location()[1])
+            
             valid = True
-            if not ((0 <= neighborPos[0] + 1 < 20) and (0 <= neighborPos[1] < 10)): valid = False
-            if neighbor == 1: valid = False
+            if ((0 <= checkedPos[0] < 20) and (0 <= checkedPos[1] < 10)):
+                checkedValue = self.board[checkedPos[0]][checkedPos[1]]
+
+                if checkedValue == 1: valid = False
+            else:
+                valid = False
 
             if valid:
-                #print(f"Adding position to list: { neighborPos }")
+                #print(f"Adding position to list: { checkedPos }")
                 #                        Checks if the bottom of the block is empty
-                path.add((neighborPos, (self.board[neighborPos[0] + 1, neighborPos[1]] == 1) if neighborPos[0] + 1 < 20 else True))
+                path.add((checkedPos, (self.board[checkedPos[0] + 1, checkedPos[1]] == 1) if checkedPos[0] < 19 else True))
 
-                if neighborPos[0] == tracer.position[0] + 1:
+                if checkedPos[0] == tracer.position[0] + 1:
                     tracer.update_direction("up")
-                elif neighborPos[0] == tracer.position[0] - 1:
+                elif checkedPos[0] == tracer.position[0] - 1:
                     tracer.update_direction("down")
-                elif neighborPos[1] == tracer.position[1] + 1:
+                elif checkedPos[1] == tracer.position[1] + 1:
                     tracer.update_direction("left")
                 else:
                     tracer.update_direction("right")
                 
-                tracer.update_position(neighborPos)
+                tracer.update_position(checkedPos)
             else:
                 tracer.next_direction()
         
