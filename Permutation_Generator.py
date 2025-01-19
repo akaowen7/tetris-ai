@@ -100,13 +100,3 @@ def generate_permutations(input_piece, board):
     
     return valid_placements
 
-test_piece = Piece(0,0,T)
-
-# print(sample_board)
-perms = generate_permutations(test_piece, sample_board)
-
-print("perms length: ", len(perms))
-#print(perms)
-#print(perms[1][2])
-print(f"piece: (x, y): ({ perms[1][1].x }, { perms[1][1].y }), rotation: { perms[1][1].rotation }")
-

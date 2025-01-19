@@ -44,7 +44,6 @@ class Board_Evaluator:
                 heights.append(0)
             else:
                 heights.append(20 - filledCells[0])
-        print(heights)
         return heights
 
     def find_board_value(self):

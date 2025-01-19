@@ -37,10 +37,6 @@ top_left_y = s_height - play_height - 50
 
 filepath = './Resources/highscore.txt'
 fontpath = 'Resources/Hubot_Sans/static/HubotSans-Medium.ttf'
-# fontpath_mario = './Resources/mario.ttf'
-
-# dummy values for now
-
 
 def drop_shadow_text(screen, text, size, x, y, colour=(255, 255, 255), drop_colour=(128, 128, 128), font=None):
     # how much 'shadow distance' is best?
@@ -144,6 +140,7 @@ def clear_rows(grid, locked):
                 except ValueError:
                     continue
                 except KeyError:
+                    print("KeyError thrown")
                     continue
 
     # shift every row one step down

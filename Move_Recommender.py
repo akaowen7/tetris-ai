@@ -30,8 +30,6 @@ class Move_Recommender:
 
         calculated_values.sort(key=lambda x: x[2], reverse=True)
 
-        print("Num of options: ", calculated_values)
-
         outputted_moves = []
         for i in range(self.num_recs):
             outputted_moves.append(calculated_values[i])
