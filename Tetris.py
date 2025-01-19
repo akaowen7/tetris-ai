@@ -1,5 +1,7 @@
 import random
+import numpy as np
 import pygame
+import Move_Recommender as Move_Rec
 
 """
 10 x 20 grid
@@ -437,6 +439,7 @@ def draw_window(surface, grid, score=0, last_score=0):
 
 
 def draw_rec_numbers(surface, confidence, numbers):
+
     rankFont = pygame.font.Font(fontpath, 20)
     confFont = pygame.font.Font(fontpath, 12)
 
@@ -495,6 +498,8 @@ def main(window):
     level_time = 0
     score = 0
     last_score = get_max_score()
+
+    recommended_moves = []
 
     while run:
         # need to constantly make new grid as locked positions always change
@@ -623,9 +628,14 @@ def main(window):
                  for i in clean_grid_from_locked(locked_positions)]
             ))
 
+            recommended_moves = Move_Rec.Move_Recommender(
+                clean_grid_from_locked(locked_positions), next_piece).recommend_move()
+            
+            print(recommended_moves)
+
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
-        draw_rec_numbers(window, [recommended_moves[0][1], recommended_moves[1][1], recommended_moves[2][1]], rec_nums)
+        draw_rec_numbers(window, [move[1] for move in recommended_moves], rec_nums)
         pygame.display.update()
 
         if check_lost(locked_positions):
