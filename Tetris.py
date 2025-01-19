@@ -3,7 +3,7 @@ import numpy as np
 import pygame
 import Move_Recommender as Move_Rec
 from Permutation_Generator import generate_permutations
-from shared_imports import Piece, I, T, shapes, convert_shape_format
+from shared_imports import Piece, I, T, shapes, convert_shape_format, xy_rel_to_blocks
 
 """
 10 x 20 grid
@@ -39,11 +39,6 @@ fontpath = 'Resources/Hubot_Sans/static/HubotSans-Medium.ttf'
 # fontpath_mario = './Resources/mario.ttf'
 
 # dummy values for now
-recommended_moves = [
-    (Piece(1, 19, I), 95),
-    (Piece(4, 20, T), 90),
-    (Piece(7, 20, T), 85),
-]
 
 
 def drop_shadow_text(screen, text, size, x, y, colour=(255, 255, 255), drop_colour=(128, 128, 128), font=None):
@@ -213,8 +208,6 @@ def draw_next_shape(piece, surface):
 # draws the content of the window
 def draw_window(surface, grid, score=0, last_score=0):
     surface.fill((0, 0, 0))  # fill the surface with black
-
-    grid[19][9] = (255, 0, 0)
 
     pygame.font.init()  # initialise font
     font = pygame.font.Font(fontpath, 65)
@@ -428,9 +421,6 @@ def main(window):
                     current_piece.y = recommended_moves[1][0].y
                     current_piece.rotation = recommended_moves[1][0].rotation
 
-                elif event.key == pygame.K_4: 
-                    print(generate_permutations(current_piece, clean_grid_from_locked(locked_positions)))
-
         piece_pos = convert_shape_format(current_piece)
 
         # draw the piece on the grid by giving color in the piece locations
@@ -444,14 +434,8 @@ def main(window):
         for piece_and_conf in recommended_moves:
             (board, piece, confidence) = piece_and_conf
 
-            temp = piece.x
-            piece.x = piece.y
-            piece.y = temp
-
-            print("Recommened board: ", board)
-            print("Recommened position: ", piece.x, piece.y, piece.rotation)
-            print("confidence in recommendation: ", confidence)
             rec_piece_pos = convert_shape_format(piece)
+            rec_piece_pos = [(y, x) for x, y in rec_piece_pos]
 
             max_x = 0
             min_x = 10
@@ -462,7 +446,7 @@ def main(window):
                 x, y = rec_piece_pos[i]
                 print(f"size of the grid: ({ len(grid) }, { len(grid[0]) }), x: { x }, y: { y }")
                 if y >= 0:
-                    grid[y][x] = (40, 40, 40)
+                    grid[x][y] = (40, 40, 40)
 
                 max_x = max(max_x, x)
                 min_x = min(min_x, x)
@@ -496,7 +480,7 @@ def main(window):
             # ))
 
             recommended_moves = Move_Rec.Move_Recommender(
-                clean_grid_from_locked(locked_positions), next_piece).recommend_move()
+                clean_grid_from_locked(locked_positions), current_piece).recommend_move()
             
             # print(recommended_moves)
 

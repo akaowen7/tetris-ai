@@ -41,7 +41,6 @@ def generate_permutations(input_piece, board):
             
             piece.rotation = rotation
             xy_positions = xy_rel_to_blocks(piece) #all the xy positions corresponding to one of the blocks being in test_pos
-
             for xy in xy_positions: #try putting xy in each position
                 piece.x = test_pos[1] + xy[0]
                 piece.y = test_pos[0] + xy[1]
@@ -88,6 +87,7 @@ def generate_permutations(input_piece, board):
                     #         else:
                     #             column.append(0)
                     #     new_board.append(column)
+                    print("Recommended move:", piece.x, piece.y)
                     valid_placements.append((new_board + board, Piece(piece.x, piece.y, piece.shape)))
     
     return valid_placements
