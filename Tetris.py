@@ -407,19 +407,19 @@ def main(window):
                             1 % len(current_piece.shape)
                         
                 elif event.key == pygame.K_1 and len(recommended_moves) > 0:
-                    current_piece.x = recommended_moves[0][0].x
-                    current_piece.y = recommended_moves[0][0].y
-                    current_piece.rotation = recommended_moves[0][0].rotation
+                    current_piece.x = recommended_moves[0][1].x
+                    current_piece.y = recommended_moves[0][1].y
+                    current_piece.rotation = recommended_moves[0][1].rotation
 
                 elif event.key == pygame.K_2 and len(recommended_moves) > 1:
-                    current_piece.x = recommended_moves[1][0].x
-                    current_piece.y = recommended_moves[1][0].y
-                    current_piece.rotation = recommended_moves[1][0].rotation
+                    current_piece.x = recommended_moves[1][1].x
+                    current_piece.y = recommended_moves[1][1].y
+                    current_piece.rotation = recommended_moves[1][1].rotation
 
                 elif event.key == pygame.K_3 and len(recommended_moves) > 2:
-                    current_piece.x = recommended_moves[1][0].x
-                    current_piece.y = recommended_moves[1][0].y
-                    current_piece.rotation = recommended_moves[1][0].rotation
+                    current_piece.x = recommended_moves[2][1].x
+                    current_piece.y = recommended_moves[2][1].y
+                    current_piece.rotation = recommended_moves[1][1].rotation
 
         piece_pos = convert_shape_format(current_piece)
 
