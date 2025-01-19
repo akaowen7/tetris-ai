@@ -104,8 +104,8 @@ T = [['.....',
 
 # index represents the shape
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255),
-                (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(27, 224, 27), (237, 38, 38), (33, 217, 217),
+                (230, 230, 37), (235, 186, 28), (34, 78, 224), (150, 14, 132)]
 
 # class to represent each of the pieces
 class Piece(object):
