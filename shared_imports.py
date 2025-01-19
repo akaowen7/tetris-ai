@@ -148,7 +148,7 @@ def convert_shape_format(piece):
 
     return positions
 
-def positions_rel_to_xy(piece):
+def xy_rel_to_blocks(piece):
     positions = []
     shape_format = piece.shape[piece.rotation % len(piece.shape)]
     for i, line in enumerate(shape_format):  # i gives index; line gives string
@@ -156,5 +156,7 @@ def positions_rel_to_xy(piece):
         # j gives index of char; column gives char
         for j, column in enumerate(row):
             if column == '0':
-                positions.append((j - 2, i - 4))
+                #positions.append((j - 2, i - 4))
+                positions.append((2 - j, 4 - i))
+
     return positions
