@@ -26,11 +26,12 @@ class Move_Recommender:
         for board in perms:
             # print(board)
             calculated_values.append((board[0], board[1], Board_Eval.Board_Evaluator(board[0]).find_board_value()))
+            print(f"Board value: {calculated_values[-1][2]}")
 
-        calculated_values.sort(key=lambda x: x[2])
+        calculated_values.sort(key=lambda x: x[2], reverse=True)
 
         outputted_moves = []
-        for i in range(1):
+        for i in range(3):
             outputted_moves.append(calculated_values[i])
         
         return outputted_moves

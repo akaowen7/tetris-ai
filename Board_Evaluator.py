@@ -42,11 +42,15 @@ class Board_Evaluator:
             if len(filledCells) == 0:
                 heights.append(0)
             else:
-                heights.append(filledCells[0])
-        # print(heights)
+                heights.append(20 - filledCells[0])
+        print(heights)
         return heights
 
     def find_board_value(self):
+        print("Holes: ", self.holes(self.initial_board))
+        print("Height: ", self.board_height())
+        print("Variance: ", self.surface_variance())
+        print("Complete lines: ", self.complete_lines(self.initial_board))
         return ((self.holes(self.initial_board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(self.initial_board) * self.lines_param))
 
     def holes(self, board: np.array):
@@ -64,7 +68,6 @@ class Board_Evaluator:
 
     def board_height(self):
         return sum(self.heightsOfCols)/len(self.heightsOfCols)
-    
 
     def surface_variance(self):        
         return sum(abs(self.heightsOfCols[i] - self.heightsOfCols[i + 1]) for i in range(len(self.heightsOfCols) - 1))
@@ -77,7 +80,7 @@ class Board_Evaluator:
                 completeLineCount += 1
         return completeLineCount
     
-# boardEvalObj = Board_Evaluator(sample_board)
+boardEvalObj = Board_Evaluator(sample_board)
 
 # print("Max height: ", boardEvalObj.board_height())
 # print("Surface variance: ", boardEvalObj.surface_variance())

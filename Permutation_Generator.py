@@ -89,8 +89,7 @@ def generate_permutations(input_piece, board):
                     #     new_board.append(column)
                     rec_piece = Piece(piece.x, piece.y, piece.shape)
                     rec_piece.rotation = piece.rotation
-
-                    print("new board: ", (new_board + board, str(rec_piece)))
+                    
                     valid_placements.append((new_board + board, rec_piece))
     
     return valid_placements
