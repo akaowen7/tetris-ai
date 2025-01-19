@@ -63,13 +63,7 @@ class Board_Evaluator:
         return holes
 
     def board_height(self):
-        max_height = 0
-
-        for height in self.heightsOfCols:
-            if height > max_height:
-                max_height = height
-
-        return max_height - 1 # Subtract 1 to make it 0-indexed
+        return sum(self.heightsOfCols)/len(self.heightsOfCols)
     
 
     def surface_variance(self):        
