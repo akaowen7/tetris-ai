@@ -47,7 +47,6 @@ def generate_permutations(input_piece, board):
                 piece.x = test_pos[1] + xy[0]
                 piece.y = test_pos[0] + xy[1]
                 if (piece.x, piece.y, rotation) in simple_valid_placements:
-                    print("duplicate")
                     continue
                 blocks_abs = convert_shape_format(piece) #computationally inefficient but more readable I hope
                 blocks_abs = [(i[1], i[0]) for i in blocks_abs] # Convert to our x,y format

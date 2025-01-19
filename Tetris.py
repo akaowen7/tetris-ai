@@ -140,7 +140,6 @@ def clear_rows(grid, locked):
                 except ValueError:
                     continue
                 except KeyError:
-                    print("KeyError thrown")
                     continue
 
     # shift every row one step down
@@ -490,11 +489,6 @@ def main(window):
 
             recommended_moves = Move_Rec.Move_Recommender(
                 clean_grid_from_locked(locked_positions), current_piece, num_recommended_moves).recommend_move()
-            
-            for i in recommended_moves:
-                print("board: ", i[0])
-                print("rec position: ", i[1])
-                print("confidence: ", i[2])
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
