@@ -299,9 +299,9 @@ def draw_rec_numbers(surface, confidence, numbers):
         conf = confFont.render(
             str(round(confidence[i], 2)), 1, (255, 255, 255))
         surface.blit(
-            rank, ((top_left_x + numbers[i][0] * block_size) + 10, top_left_y + numbers[i][1] * block_size - 9))
+            rank, ((top_left_x + numbers[i][0] * block_size) + block_size//2 - rank.get_width()//2, top_left_y + numbers[i][1] * block_size - 9))
         surface.blit(
-            conf, ((top_left_x + numbers[i][0] * block_size) + 8, top_left_y + numbers[i][1] * block_size + 15))
+            conf, ((top_left_x + numbers[i][0] * block_size) + block_size//2 - conf.get_width()//2, top_left_y + numbers[i][1] * block_size + 15))
 
 # update the score txt file with high score
 def update_score(new_score):
