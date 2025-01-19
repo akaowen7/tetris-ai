@@ -1,5 +1,5 @@
 import numpy as np
-import Permutation_Generator as Perm_Gen
+import Edge_Tracer as Edge_Tracer
 
 sample_board = np.array([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,50 +26,52 @@ sample_board = np.array([
 class Board_Evaluator:
     def __init__(self, initial_board):
         self.initial_board = initial_board # 20 x 10 np array
+        self.heightsOfCols = self.find_board_heights(initial_board)
     
     # Factor parameters
     holes_param = -0.51 # a
     height_param = -0.35 # b
     variance_param = -0.18 # c
     lines_param = 0.76 # d
-
-
-    def find_board_value(self, board):
-        return (self.holes(board) * self.holes_param) + (self.board_height(board) * self.height_param) + (self.surface_variance(board) * self.variance_param) +(self.complete_lines(board) * self.lines_param)
-
-    # Needs work!!!!!!!!!
-    def holes(_, board: np.array):
-        return 2
-
-    def board_height(_, board: np.array):
-        max_height = 0
-
+    
+    def find_board_heights(self, board):
+        heights = []
         for i in range(board.shape[1]):
             col = board[:, i] # Gets columns
+            filledCells = np.where(col != 0)[0]
+            if len(filledCells) == 0:
+                heights.append(0)
+            else:
+                heights.append(filledCells[0])
+        print(heights)
+        return heights
 
-            print(col)
+    def find_board_value(self, board):
+        return ((self.holes(board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(board) * self.lines_param))
 
-            blocksInCol = np.where(col != 0)[0]
-            if blocksInCol.size > 0 and (board.shape[0] - blocksInCol[0]) > max_height:
-                max_height = board.shape[0] - blocksInCol[0]
+    def holes(self, board: np.array):
+        edges = Edge_Tracer.Edge_Tracer(board).generate_path()
+        holes = 0
+
+        for i in range(board.shape[1]):
+            col = board[:, i]
+            lowestEdge = max([edge for edge in edges if edge[1] == i], key=lambda x: x[0])[0]
+            holes += np.where(col[lowestEdge + 1::] == 0)[0].shape[0]
+
+        return holes
+
+    def board_height(self):
+        max_height = 0
+
+        for height in self.heightsOfCols:
+            if height > max_height:
+                max_height = height
 
         return max_height - 1 # Subtract 1 to make it 0-indexed
     
 
-    def surface_variance(_, board):
-        colHeights = []
-        for i in range(board.shape[1]):
-            col = board[:, i] # Gets columns
-
-            blocksInCol = np.where(col != 0)[0]
-            height = 0
-            if blocksInCol.size > 0:
-                height = board.shape[0] - blocksInCol[0]
-            colHeights.append(height)
-
-        print(colHeights)
-        
-        return sum(abs(colHeights[i] - colHeights[i + 1]) for i in range(len(colHeights) - 1))
+    def surface_variance(self):        
+        return sum(abs(self.heightsOfCols[i] - self.heightsOfCols[i + 1]) for i in range(len(self.heightsOfCols) - 1))
 
     def complete_lines(_, board):
         completeLineCount = 0
@@ -81,6 +83,7 @@ class Board_Evaluator:
     
 boardEvalObj = Board_Evaluator(sample_board)
 
-print("Max height: ", boardEvalObj.board_height(sample_board))
-print("Surface variance: ", boardEvalObj.surface_variance(sample_board))
+print("Max height: ", boardEvalObj.board_height())
+print("Surface variance: ", boardEvalObj.surface_variance())
 print("Complete lines: ", boardEvalObj.complete_lines(sample_board))
+print("Holes: ", boardEvalObj.holes(sample_board))
