@@ -30,6 +30,7 @@ s_height = 750  # window height
 play_width = 300  # play window width; 300/10 = 30 width per block
 play_height = 600  # play window height; 600/20 = 20 height per block
 block_size = 30  # size of block
+num_recommended_moves = 3 # number of recommended moves
 
 top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height - 50
@@ -348,7 +349,7 @@ def main(window):
     last_score = get_max_score()
 
     recommended_moves = Move_Rec.Move_Recommender(
-                clean_grid_from_locked(locked_positions), current_piece).recommend_move()
+                clean_grid_from_locked(locked_positions), current_piece, num_recommended_moves).recommend_move()
 
     while run:
         # need to constantly make new grid as locked positions always change
@@ -447,9 +448,9 @@ def main(window):
             rec_piece_pos = [(y, x) for x, y in rec_piece_pos]
 
             max_x = 0
-            min_x = 10
+            min_x = 20
             max_y = 0
-            min_y = 20
+            min_y = 10
 
             for i in range(len(rec_piece_pos)):
                 x, y = rec_piece_pos[i]
@@ -461,8 +462,8 @@ def main(window):
                 max_y = max(max_y, y)
                 min_y = min(min_y, y)
 
-            rec_nums.append((min_x + (max_x - min_x)/2,
-                            min_y + (max_y - min_y)/2))
+            rec_nums.append((min_y + (max_y - min_y)/2,
+                            min_x + (max_x - min_x)/2))
 
         if change_piece:  # if the piece is locked
             for pos in piece_pos:
@@ -488,11 +489,12 @@ def main(window):
             # ))
 
             recommended_moves = Move_Rec.Move_Recommender(
-                clean_grid_from_locked(locked_positions), current_piece).recommend_move()
+                clean_grid_from_locked(locked_positions), current_piece, num_recommended_moves).recommend_move()
             
-            print("board: ", recommended_moves[0][0])
-            print("rec position: ", recommended_moves[0][1])
-            print("confidence: ", recommended_moves[0][2])
+            for i in recommended_moves:
+                print("board: ", i[0])
+                print("rec position: ", i[1])
+                print("confidence: ", i[2])
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)

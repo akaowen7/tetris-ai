@@ -90,7 +90,7 @@ class Board_Evaluator:
                 completeLineCount += 1
         return completeLineCount
     
-boardEvalObj = Board_Evaluator(sample_board)
+# boardEvalObj = Board_Evaluator(sample_board)
 
 # print("Max height: ", boardEvalObj.board_height())
 # print("Surface variance: ", boardEvalObj.surface_variance())
