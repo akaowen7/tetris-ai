@@ -138,8 +138,12 @@ def convert_shape_format(piece):
             if column == '0':
                 positions.append((piece.x + j, piece.y + i))
 
+    print(f"abs(?) Positions: { positions }, raw position: { piece.x, piece.y }, shape: { shape_format }")
+
     for i, pos in enumerate(positions):
         # offset according to the input given with dot and zero
         positions[i] = (pos[0] - 2, pos[1] - 4)
+
+    print(f"Final Positions: { positions }")
 
     return positions

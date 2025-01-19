@@ -55,7 +55,7 @@ class Edge_Tracer:
 
     def find_start_point(self):
         currentPos = (0, 0)
-        while self.board[currentPos[0] + 1, currentPos[1]] == 0:
+        while currentPos[0] + 1 < 20 and self.board[currentPos[0] + 1, currentPos[1]] == 0:
             currentPos = (currentPos[0] + 1, currentPos[1])
 
         return currentPos
@@ -69,9 +69,15 @@ class Edge_Tracer:
             neighborPos = (tracer.position[0] + tracer.check_location()[0], tracer.position[1] + tracer.check_location()[1])
             neighbor = self.board[neighborPos[0], neighborPos[1]]
 
-            if neighbor == 0:
+            #print(f"Neighbor: { neighbor }, Neighbor Position: { neighborPos }")
+            valid = True
+            if not ((0 <= neighborPos[0] + 1 < 20) and (0 <= neighborPos[1] < 10)): valid = False
+            if neighbor == 1: valid = False
+
+            if valid:
                 #print(f"Adding position to list: { neighborPos }")
-                path.add((neighborPos, self.board[neighborPos[0] + 1, neighborPos[1]] == 1))
+                #                        Checks if the bottom of the block is empty
+                path.add((neighborPos, (self.board[neighborPos[0] + 1, neighborPos[1]] == 1) if neighborPos[0] + 1 < 20 else True))
 
                 if neighborPos[0] == tracer.position[0] + 1:
                     tracer.update_direction("up")
@@ -86,9 +92,10 @@ class Edge_Tracer:
             else:
                 tracer.next_direction()
         
-        while self.board[tracer.position[0] + 1][tracer.position[1]] == 0:
+        while tracer.position[0] + 1 < 20 and self.board[tracer.position[0] + 1][tracer.position[1]] == 0:
             newPos = (tracer.position[0] + 1, tracer.position[1])
-            path.add((newPos, self.board[newPos[0] + 1, newPos[1]] == 1))
+            #print(newPos)
+            path.add((newPos, (self.board[newPos[0] + 1][newPos[1]] == 1) if newPos[0] + 1 < 20 else True))
             tracer.update_position(newPos)
         
         return path

@@ -43,19 +43,21 @@ class Board_Evaluator:
                 heights.append(0)
             else:
                 heights.append(filledCells[0])
-        print(heights)
+        # print(heights)
         return heights
 
-    def find_board_value(self, board):
-        return ((self.holes(board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(board) * self.lines_param))
+    def find_board_value(self):
+        return ((self.holes(self.initial_board) * self.holes_param) + (self.board_height() * self.height_param) + (self.surface_variance() * self.variance_param) + (self.complete_lines(self.initial_board) * self.lines_param))
 
     def holes(self, board: np.array):
-        edges = Edge_Tracer.Edge_Tracer(board).generate_path()
+        edges = [(edge[0][0], edge[0][1]) for edge in Edge_Tracer.Edge_Tracer(board).generate_path()]
+
         holes = 0
 
         for i in range(board.shape[1]):
             col = board[:, i]
             lowestEdge = max([edge for edge in edges if edge[1] == i], key=lambda x: x[0])[0]
+            # print(lowestEdge)
             holes += np.where(col[lowestEdge + 1::] == 0)[0].shape[0]
 
         return holes

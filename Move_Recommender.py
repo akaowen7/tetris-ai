@@ -11,7 +11,6 @@ class Move_Recommender:
         self.initial_board = np.array(initial_board) # 20 x 10 np array
         self.next_piece = next_piece
 
-        self.permGen = Perm_Gen.Permutation_Generator(self.initial_board, self.next_piece)
         self.boardEval = Board_Eval.Board_Evaluator(self.initial_board)
 
     def recommend_move(self):
@@ -21,16 +20,20 @@ class Move_Recommender:
         Outputs:
         best_move (np.array[(np.array)]): List of the best moves to make"""
 
-        perms = self.permGen.generate()
+        perms = Perm_Gen.generate_permutations(self.next_piece, self.initial_board)
 
         calculated_values = []
         for board in perms:
-            calculated_values.append((board[0], board[1], Board_Eval.Board_Evaluator(board).find_board_value()))
+            # print(board)
+            calculated_values.append((board[0], board[1], Board_Eval.Board_Evaluator(board[0]).find_board_value()))
 
         calculated_values.sort(key=lambda x: x[2])
 
+        print(f"Top move: { calculated_values[0][0] }, { calculated_values[0][1] }, { calculated_values[0][2] }")
         outputted_moves = []
-        for i in range(3):
-            outputted_moves.append(calculated_values[i][0])
+        for i in range(1):
+            outputted_moves.append(calculated_values[i])
+
+        print(outputted_moves[0][1])
         
         return outputted_moves

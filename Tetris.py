@@ -214,6 +214,8 @@ def draw_next_shape(piece, surface):
 def draw_window(surface, grid, score=0, last_score=0):
     surface.fill((0, 0, 0))  # fill the surface with black
 
+    grid[19][9] = (255, 0, 0)
+
     pygame.font.init()  # initialise font
     font = pygame.font.Font(fontpath, 65)
     font.bold = True
@@ -387,6 +389,7 @@ def main(window):
                 quit()
 
             elif event.type == pygame.KEYDOWN:
+                print(current_piece.x, current_piece.y, current_piece.rotation)
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1  # move x position left
                     if not valid_space(current_piece, grid):
@@ -440,8 +443,17 @@ def main(window):
         rec_nums = []
 
         for piece_and_conf in recommended_moves:
-            (piece, confidence) = piece_and_conf
+            (board, piece, confidence) = piece_and_conf
+
+            temp = piece.x
+            piece.x = piece.y
+            piece.y = temp
+
+            print(board)
+            print(piece.x, piece.y, piece.rotation)
+            print(confidence)
             rec_piece_pos = convert_shape_format(piece)
+            print("Rec_piece_pos:", rec_piece_pos)
 
             max_x = 0
             min_x = 10
@@ -450,6 +462,7 @@ def main(window):
 
             for i in range(len(rec_piece_pos)):
                 x, y = rec_piece_pos[i]
+                print(np.array(grid).shape, x, y)
                 if y >= 0:
                     grid[y][x] = (40, 40, 40)
 
@@ -464,6 +477,7 @@ def main(window):
         if change_piece:  # if the piece is locked
             for pos in piece_pos:
                 p = (pos[0], pos[1])
+                print(f"final pos: {p}")
                 # add the key and value in the dictionary
                 locked_positions[p] = current_piece.color
             current_piece = next_piece
@@ -487,11 +501,11 @@ def main(window):
             recommended_moves = Move_Rec.Move_Recommender(
                 clean_grid_from_locked(locked_positions), next_piece).recommend_move()
             
-            print(recommended_moves)
+            # print(recommended_moves)
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
-        draw_rec_numbers(window, [move[1] for move in recommended_moves], rec_nums)
+        draw_rec_numbers(window, recommended_moves, rec_nums)
         pygame.display.update()
 
         if check_lost(locked_positions):
