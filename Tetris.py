@@ -216,7 +216,7 @@ def valid_space(piece, grid):
     accepted_pos = [x for item in accepted_pos for x in item]
 
     formatted_shape = convert_shape_format(piece)
-
+    
     for pos in formatted_shape:
         if pos not in accepted_pos:
             if pos[1] >= 0:
