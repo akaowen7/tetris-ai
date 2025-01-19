@@ -8,7 +8,7 @@ class Move_Recommender:
         initial_board (np.array): 10 x 20 array of the current board state
         next_piece (Piece): The next piece to be placed on the board
         """
-        self.initial_board = initial_board # 20 x 10 np array
+        self.initial_board = np.array(initial_board) # 20 x 10 np array
         self.next_piece = next_piece
 
         self.permGen = Perm_Gen.Permutation_Generator(self.initial_board, self.next_piece)
@@ -21,7 +21,7 @@ class Move_Recommender:
         Outputs:
         best_move (np.array[(np.array)]): List of the best moves to make"""
 
-        perms = self.permGen.generate(self.initial_board, self.next_piece)
+        perms = self.permGen.generate()
 
         calculated_values = []
         for board in perms:
