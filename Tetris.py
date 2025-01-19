@@ -294,7 +294,7 @@ def draw_rec_numbers(surface, confidence, numbers):
     for i in range(len(numbers)):
         rank = rankFont.render(str(i + 1), 1, (255, 255, 255))
         conf = confFont.render(
-            str(round(confidence[i], 2)), 1, (255, 255, 255))
+            str(round(5 + confidence[i], 2)), 1, (255, 255, 255))
         surface.blit(
             rank, ((top_left_x + numbers[i][0] * block_size) + block_size//2 - rank.get_width()//2, top_left_y + numbers[i][1] * block_size - 9))
         surface.blit(
