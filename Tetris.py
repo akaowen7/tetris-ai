@@ -347,7 +347,8 @@ def main(window):
     score = 0
     last_score = get_max_score()
 
-    recommended_moves = []
+    recommended_moves = Move_Rec.Move_Recommender(
+                clean_grid_from_locked(locked_positions), current_piece).recommend_move()
 
     while run:
         # need to constantly make new grid as locked positions always change
@@ -439,7 +440,7 @@ def main(window):
 
         rec_nums = []
 
-        for piece_and_conf in recommended_moves:
+        for rec_num, piece_and_conf in enumerate(recommended_moves):
             (board, piece, confidence) = piece_and_conf
 
             rec_piece_pos = convert_shape_format(piece)
@@ -453,7 +454,7 @@ def main(window):
             for i in range(len(rec_piece_pos)):
                 x, y = rec_piece_pos[i]
                 if y >= 0:
-                    grid[x][y] = (40, 40, 40)
+                    grid[x][y] = (100 - 25*rec_num, 100 - 25*rec_num, 100 - 25*rec_num)
 
                 max_x = max(max_x, x)
                 min_x = min(min_x, x)
@@ -495,7 +496,7 @@ def main(window):
 
         draw_window(window, grid, score, last_score)
         draw_next_shape(next_piece, window)
-        draw_rec_numbers(window, recommended_moves, rec_nums)
+        draw_rec_numbers(window, [recommended_moves[0][2], recommended_moves[1][2], recommended_moves[2][2]], rec_nums)
         pygame.display.update()
 
         if check_lost(locked_positions):
